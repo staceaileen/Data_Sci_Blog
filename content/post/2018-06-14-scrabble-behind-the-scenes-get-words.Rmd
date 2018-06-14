@@ -6,7 +6,7 @@ slug: scrabble-behind-the-scenes-get-words
 categories: [R]
 tags: [R Package]
 ---
-
+ 
 ```{r setup, include=FALSE}
 library(scRabble)
 ```

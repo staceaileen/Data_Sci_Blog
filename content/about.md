@@ -1,6 +1,8 @@
 ---
 title: "About"
-date: "2016-05-05T21:48:51-07:00"
+date: "2018-06-14"
 ---
 
-This is a "hello world" example website for the [**blogdown**](https://github.com/rstudio/blogdown) package. The theme was forked from [@jrutheiser/hugo-lithium-theme](https://github.com/jrutheiser/hugo-lithium-theme) and modified by [Yihui Xie](https://github.com/yihui/hugo-lithium).
+My name is Stacy Kam and I was born a raised in Panama City, Panama. I went to Florida to obtain my undergrad degree on Computer Engineering at University of South Florida, and am continuing my studies with a Master's of Science in Engineering Management. 
+
+I aspire to be a data scientist or a data analyst. I love everything from the tidy code lines that decipher messy dataframes to making it look pretty on a dashboard. 

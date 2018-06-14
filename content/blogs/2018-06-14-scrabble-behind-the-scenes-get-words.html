@@ -1,0 +1,33 @@
+---
+title: 'scRabble Behind the Scenes: get_words()'
+author: Stacy Kam
+date: '2018-06-13'
+slug: scrabble-behind-the-scenes-get-words
+categories: [R]
+tags: [R Package]
+---
+
+
+
+<p>So how did I write the get_words() function? There are hundreds of handy dandy web apps circulating the globe right now, so I decided to not re-invent the wheel and clutch on to one of these sites.</p>
+<p>Some webscraping was used to acquire the list of words, and here’s what our first chunk of code looks like:</p>
+<pre class="r"><code>if(wildcard == TRUE){
+    link = link = paste0(&quot;https://word.tips/words-for/&quot;, letters, &quot;*?is_search=true&quot;)
+  } else {
+    link = paste0(&quot;https://word.tips/words-for/&quot;, letters, &quot;?is_search=true&quot;)
+  }</code></pre>
+<p>Here we are evaluating if a wild card was added, if it was we add an asterisk * after the string of letters, if not we just include the string of letters into our handy dandy URL.</p>
+<p>After that we just read the provided words through its xpath:</p>
+<pre class="r"><code> html &lt;- xml2::read_html(link)
+  html &lt;- rvest::html_nodes(html, xpath = &#39;//*[contains(concat( &quot; &quot;, @class, &quot; &quot; ), concat( &quot; &quot;, &quot;changeable-word&quot;, &quot; &quot; ))]&#39;)
+  html &lt;- rvest::html_text(html)</code></pre>
+<p>Sometimes there aren’t any words that can be created, for example the characters “xyz” won’t create any words. We have a fail catch for when that happens:</p>
+<pre class="r"><code>if (identical(html,character(0))) {
+    print(&quot;No words :(&quot;)
+    return()
+  }</code></pre>
+<p>And lastly, if no word length was constricted the entire list will be the output. Otherwise we applied the sapply function to evaluate all the words that are equal to the number of characters desired:</p>
+<pre class="r"><code>if(word_len == 0) {return(html)} else{
+    condition &lt;- sapply(html, function(x) nchar(x) == word_len)
+    return (html[condition])
+  }</code></pre>

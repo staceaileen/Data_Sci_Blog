@@ -1,0 +1,89 @@
+---
+title: 'Kaggle Competition: 0.737 ROC Submission'
+author: Stacy Kam
+date: '2018-06-13'
+slug: kaggle-competition-0-737-roc-submission
+categories: [R]
+tags: [Kaggle, Kaggle Competition, Logistic Regression, R]
+---
+ 
+```{r setup, include=FALSE}
+library(caret)
+library(dplyr)
+library(pROC)
+library(DT)
+library(knitr)
+```
+
+# Introduction
+
+Currently there is a competition on Kaggle called "Home Credit Default Risk" where we are given application information in a train and test dataset and are to build a model optimizing its ROC value to predict if the applicant received a loan or not. 
+
+The train dataframe has over 300,000 observations and 122 variables. 
+
+```{r message=FALSE, warning=FALSE, cache=TRUE, tidy=TRUE}
+train <- read.csv("application_train.csv")
+bureau <- read.csv("bureau.csv")
+```
+```{r echo=FALSE}
+kable(train[1:5, 1:5], caption = "Tiny peak at the enourmous data")
+```
+
+# My Model:
+## Cleaning the Data
+
+First thing I did was to convert our dependent variable into a factor since it was categorized as an int, then I imputed the mean to all NA values for all columns except the OWN_CAR_AGE, since if you don't have a car it should be zero rather than a mean. 
+```{r, message=FALSE, warning=FALSE}
+train$TARGET <- factor(train$TARGET)
+train$OWN_CAR_AGE[is.na(train$OWN_CAR_AGE)] <- 0
+```
+
+I also downloaded a supplementary file called bureau that has a lot of financial information for some clients. This file contains several rows per ID since it accounts for all different transactions. So for the columns referring to money amounts I added those columns and grouped it by ID to then left join it with our existing dataframe:
+```{r message=FALSE, warning=FALSE}
+bureau1 <- bureau %>%
+  group_by(SK_ID_CURR) %>%
+  summarise(
+    AMT_CREDIT_MAX_OVERDUE = sum(AMT_CREDIT_MAX_OVERDUE),
+    AMT_CREDIT_SUM = sum(AMT_CREDIT_SUM),
+    AMT_CREDIT_SUM_DEBT = sum(AMT_CREDIT_SUM_DEBT),
+    AMT_CREDIT_SUM_LIMIT = sum(AMT_CREDIT_SUM_LIMIT), 
+    AMT_CREDIT_SUM_OVERDUE = sum(AMT_CREDIT_SUM_OVERDUE)
+  )
+train <- merge(train, bureau1, by = "SK_ID_CURR", all.x = TRUE)
+for(i in 1:ncol(train)){
+  train[is.na(train[,i]), i] <- mean(train[,i], na.rm = TRUE)
+}
+```
+
+## Logistic Regression Model
+Then I procceded to divide my training set in order to be able to test my model: 
+```{r}
+train.index = sample(c("train", "test"), nrow(train), replace = TRUE, prob = c(0.8, 0.2))
+divided = split(train, train.index)
+```
+
+And finally I applied a logistic regression model with values selected showing a significance of p-values.
+```{r, cache=TRUE}
+fit <- glm(TARGET ~ NAME_CONTRACT_TYPE + CODE_GENDER + FLAG_OWN_CAR + AMT_CREDIT + AMT_ANNUITY + 
+             AMT_GOODS_PRICE + DAYS_EMPLOYED + DAYS_REGISTRATION + DAYS_ID_PUBLISH + OWN_CAR_AGE +
+             FLAG_WORK_PHONE + FLAG_PHONE + OCCUPATION_TYPE + REGION_RATING_CLIENT_W_CITY + 
+             WEEKDAY_APPR_PROCESS_START + REG_CITY_NOT_LIVE_CITY + ORGANIZATION_TYPE + EXT_SOURCE_1 +
+             EXT_SOURCE_2 + EXT_SOURCE_3 + DEF_30_CNT_SOCIAL_CIRCLE + DAYS_LAST_PHONE_CHANGE + 
+             FLAG_DOCUMENT_3 + FLAG_DOCUMENT_5 + FLAG_DOCUMENT_6 + FLAG_DOCUMENT_8 + FLAG_DOCUMENT_9 + 
+             FLAG_DOCUMENT_13 + FLAG_DOCUMENT_14 + FLAG_DOCUMENT_16 + FLAG_DOCUMENT_18 + 
+             AMT_REQ_CREDIT_BUREAU_QRT + AMT_REQ_CREDIT_BUREAU_YEAR + AMT_CREDIT_SUM_DEBT +
+             AMT_CREDIT_SUM_OVERDUE
+           , divided$train, family = binomial) 
+```
+
+# Results
+
+From this model we obtained the following ROC value, which is the highest I've gotten so far:
+```{r}
+predict.response <- predict(fit, divided$test, type = "response")
+(g <- roc(TARGET ~ predict.response, data = divided$test))
+```
+
+# Conclusion
+
+There's much to be improved but so far this is the model I've got. 

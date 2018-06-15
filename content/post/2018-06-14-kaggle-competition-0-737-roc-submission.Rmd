@@ -26,7 +26,7 @@ train <- read.csv("application_train.csv")
 bureau <- read.csv("bureau.csv")
 ```
 ```{r echo=FALSE}
-kable(train[1:5, 1:5], caption = "Tiny peak at the enourmous data")
+kable(train[1:5, 1:5], caption = "Tiny peek at the enourmous data")
 ```
 
 # My Model:

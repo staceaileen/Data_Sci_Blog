@@ -3,8 +3,8 @@ title: 'R Package: scRabble'
 author: Stacy Kam
 date: '2018-06-13'
 slug: r-package-scrabble
-categories: ["R"]
-tags: ["R Package"]
+categories: [R]
+tags: [R Package]
 ---
  
 ```{r setup, include=FALSE}

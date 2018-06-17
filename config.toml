@@ -75,7 +75,7 @@ canonifyurls = true
   identifier = "about"
   name = "About"
   pre = "<i class=\"sidebar-button-icon fa fa-lg fa-question\"></i>"
-  url = "https://xenodochial-chandrasekhar-dfb89b.netlify.com/2018/06/who-am-i/"
+  url = "https://dataewok.netlify.com/2018/06/who-am-i/"
 
 [[menu.links]]
   weight = 1

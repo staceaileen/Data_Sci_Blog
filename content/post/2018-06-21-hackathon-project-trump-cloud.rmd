@@ -23,6 +23,7 @@ library(lubridate)
 ```
 
 This project can be accessed at [https://dataewok.shinyapps.io/trump_cloud/](https://dataewok.shinyapps.io/trump_cloud/).
+
 This project's Github repo can be accesses at [https://github.com/staceaileen/trump_cloud](https://github.com/staceaileen/trump_cloud.)
 
 # The Idea

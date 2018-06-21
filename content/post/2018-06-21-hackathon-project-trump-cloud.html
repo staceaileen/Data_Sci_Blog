@@ -10,7 +10,7 @@ tags: [hackathon, shiny app, R package, R, wordcloud]
 
 
 <p>This project can be accessed at <a href="https://dataewok.shinyapps.io/trump_cloud/" class="uri">https://dataewok.shinyapps.io/trump_cloud/</a>.</p>
-<p>This project’s Github repo can be accesses at <a href="https://github.com/staceaileen/trump_cloud.">https://github.com/staceaileen/trump_cloud</a></p>
+<p>This project’s Github repo can be accesses at <a href="https://github.com/staceaileen/trump_cloud.">https://github.com/staceaileen/trump_cloud</a>.</p>
 <div id="the-idea" class="section level1">
 <h1>The Idea</h1>
 <p>The idea for this application came from the thought of “What Did Trump Do Now?”. There’s so much buzz about everything that he’s doing since he’s not ruining the world one crisis at a time but multiple conflicts going at once. So how do we get all the keywords of what’s happening, or at least what people are talking about the most? Through a wordcloud.</p>
@@ -168,7 +168,10 @@ server &lt;- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)</code></pre>
-<p><div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div> # Improvements and Additions for the Future</p>
+<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
+</div>
+<div id="improvements-and-additions-for-the-future" class="section level1">
+<h1>Improvements and Additions for the Future</h1>
 <ul>
 <li>Figure out how to make the fetching of tweets faster since it delays the loading time of the app.</li>
 <li>Create a map of the locations where the tweets are coming from</li>

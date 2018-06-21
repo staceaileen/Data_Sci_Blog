@@ -24,7 +24,7 @@ library(lubridate)
 
 This project can be accessed at [https://dataewok.shinyapps.io/trump_cloud/](https://dataewok.shinyapps.io/trump_cloud/).
 
-This project's Github repo can be accesses at [https://github.com/staceaileen/trump_cloud](https://github.com/staceaileen/trump_cloud.)
+This project's Github repo can be accesses at [https://github.com/staceaileen/trump_cloud](https://github.com/staceaileen/trump_cloud.). 
 
 # The Idea
 The idea for this application came from the thought of "What Did Trump Do Now?". There's so much buzz about everything that he's doing since he's not ruining the world one crisis at a time but multiple conflicts going at once. So how do we get all the keywords of what's happening, or at least what people are talking about the most? Through a wordcloud. 
@@ -158,7 +158,7 @@ Our UI takes in two inputs, the amount of words to be shown and the date you wan
 
 The serves is quite simple, we are simply calling all the functions of our package and finally displayin the word cloud on the main panel. One of our biggest challenges was to be able to show the word cloud as an output and later found out that `wordcloud2` uses a different function from `renderPlot` to render the cloud and it's `renderWordcloud2()`. 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Define UI for application that draws a histogram
 ui <- fluidPage(theme = shinytheme("superhero"),
    
@@ -201,6 +201,7 @@ server <- function(input, output) {
 # Run the application 
 shinyApp(ui = ui, server = server)
 ```
+
 # Improvements and Additions for the Future
 
 - Figure out how to make the fetching of tweets faster since it delays the loading time of the app. 

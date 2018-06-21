@@ -3,8 +3,8 @@ title: 'R Package: scRabble'
 author: Stacy Kam
 date: '2018-06-13'
 slug: r-package-scrabble
-categories: ["R"]
-tags: ["R Package"]
+categories: [R]
+tags: [R Package]
 ---
 
 
@@ -30,17 +30,17 @@ tags: ["R Package"]
 <pre><code>## [1] &quot;cab&quot;</code></pre>
 <p>And to make it a little more exciting, you might even want to add a wildcard:</p>
 <pre class="r"><code>get_words(&quot;abc&quot;, 3, TRUE)</code></pre>
-<pre><code>##  [1] &quot;jab&quot; &quot;kab&quot; &quot;cay&quot; &quot;vac&quot; &quot;bah&quot; &quot;bay&quot; &quot;aby&quot; &quot;wab&quot; &quot;fab&quot; &quot;caw&quot; &quot;mac&quot;
-## [12] &quot;cam&quot; &quot;cub&quot; &quot;bap&quot; &quot;cob&quot; &quot;cap&quot; &quot;pac&quot; &quot;cab&quot; &quot;bam&quot; &quot;bad&quot; &quot;dab&quot; &quot;bag&quot;
-## [23] &quot;gab&quot; &quot;cad&quot; &quot;bal&quot; &quot;alb&quot; &quot;lab&quot; &quot;can&quot; &quot;cat&quot; &quot;act&quot; &quot;arb&quot; &quot;bar&quot; &quot;bra&quot;
-## [34] &quot;sab&quot; &quot;bas&quot; &quot;abs&quot; &quot;oca&quot; &quot;bat&quot; &quot;tab&quot; &quot;baa&quot; &quot;aba&quot; &quot;ace&quot; &quot;sac&quot; &quot;car&quot;
-## [45] &quot;arc&quot; &quot;lac&quot; &quot;boa&quot; &quot;oba&quot; &quot;abo&quot; &quot;ban&quot; &quot;nab&quot;</code></pre>
+<pre><code>##  [1] &quot;jab&quot; &quot;kab&quot; &quot;fab&quot; &quot;caw&quot; &quot;wab&quot; &quot;aby&quot; &quot;vac&quot; &quot;cay&quot; &quot;bay&quot; &quot;bah&quot; &quot;cam&quot;
+## [12] &quot;cab&quot; &quot;mac&quot; &quot;cub&quot; &quot;cap&quot; &quot;pac&quot; &quot;bap&quot; &quot;cob&quot; &quot;bam&quot; &quot;dab&quot; &quot;bad&quot; &quot;cad&quot;
+## [23] &quot;gab&quot; &quot;bag&quot; &quot;sac&quot; &quot;baa&quot; &quot;abo&quot; &quot;boa&quot; &quot;act&quot; &quot;cat&quot; &quot;lac&quot; &quot;oba&quot; &quot;oca&quot;
+## [34] &quot;aba&quot; &quot;bar&quot; &quot;bra&quot; &quot;arb&quot; &quot;ace&quot; &quot;lab&quot; &quot;arc&quot; &quot;car&quot; &quot;ban&quot; &quot;sab&quot; &quot;abs&quot;
+## [45] &quot;nab&quot; &quot;tab&quot; &quot;bat&quot; &quot;can&quot; &quot;bal&quot; &quot;alb&quot;</code></pre>
 </div>
 <div id="num_word" class="section level1">
 <h1>num_word()</h1>
 <p>If you don’t feel like looking at all the words that can be created, but rather just know how many words exist with all the different combinatins of the word, you can just call this function with the same parameters as get_words() and it will return the amount.</p>
 <pre class="r"><code>num_words(&quot;abc&quot;, 3, TRUE)</code></pre>
-<pre><code>## [1] 51</code></pre>
+<pre><code>## [1] 50</code></pre>
 </div>
 <div id="points" class="section level1">
 <h1>points()</h1>
@@ -52,7 +52,7 @@ tags: ["R Package"]
 <h1>is_word()</h1>
 <p>The only attribute for this function is simple a string representing a word, and this function will return a statement communicating if the word exists or not. This function was made to dispute all those fights about determining if a word exists or not.</p>
 <pre class="r"><code>is_word(&quot;hello&quot;)</code></pre>
-<pre><code>## [1] &quot;It is a word!&quot;</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>is_word(&quot;xcd&quot;)</code></pre>
-<pre><code>## [1] &quot;Not a word, sorry bro&quot;</code></pre>
+<pre><code>## [1] FALSE</code></pre>
 </div>

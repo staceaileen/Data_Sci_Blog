@@ -1,0 +1,33 @@
+---
+title: 'Hackathon Project: Trump Cloud'
+author: Stacy Kam
+date: '2018-06-21'
+slug: hackathon-project-trump-cloud
+categories: [R]
+tags: [hackathon, shiny app, R package, R, wordcloud]
+---
+
+```{r setup, include=FALSE}
+library(TweetBase)
+library(dplyr)
+library(wordcloud2)
+library(tidyr)
+library(twitteR)
+library(tidytext)
+library(stringr)
+library(RCurl)
+```
+
+This project can be accessed at [https://dataewok.shinyapps.io/trump_cloud/](https://dataewok.shinyapps.io/trump_cloud/)
+
+# The Idea
+The idea for this application came from the thought of "What Did Trump Do Now?". There's so much buzz about everything that he's doing since he's not ruining the world one crisis at a time but multiple conflicts going at once. So how do we get all the keywords of what's happening, or at least what people are talking about the most? Through a wordcloud. 
+
+This application is an interactive wordcloud that fetches the tweets from the day selected that mention "Trump". It then counts the frequency of the words to assign a weight on the size in the wordcloud and does a sentiment analysis on each tweet to then color code if the word is used in a negative or positive context. 
+
+For example, the word "children" is usually used on a positive context, but lately with the whole immigrant children crisis the tweets are more negative than ever talking about how this is considered torture; hence the word would be displayed in red signifying a negative connotation. 
+
+![shiny app screenshot](/img/screenshot.png)
+
+# The Package
+

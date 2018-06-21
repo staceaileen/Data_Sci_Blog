@@ -23,7 +23,7 @@ tags: [hackathon, shiny app, R package, R, wordcloud]
 </div>
 <div id="the-package" class="section level1">
 <h1>The Package</h1>
-<p>We created a package with all the functions we’d be calling from the shiny app R file, this package contains functions that range from scraping the data, cleaning the tweets, sentiment analysis, and creating a wordcloud. This package can be accesses at <a href="https://github.com/lukemcphillips/trumppackage2.0" class="uri">https://github.com/lukemcphillips/trumppackage2.0</a>.</p>
+<p>We created a package with all the functions we’d be calling from the shiny app R file, this package contains functions that range from scraping the data, cleaning the tweets, sentiment analysis, and creating a wordcloud. This package can be accessed at <a href="https://github.com/lukemcphillips/trumppackage2.0" class="uri">https://github.com/lukemcphillips/trumppackage2.0</a>.</p>
 <div id="tweets-function" class="section level2">
 <h2><code>tweets()</code> function</h2>
 <p>This function simply retrieves all the tweets related to Trump from Twitter. It takes in all the keys and tokens necessary to access Twitter, and then uses the <code>library(twitteR)</code> package to <code>searchTwitter()</code>. We have it set up to retrieve a maximum of 2500 tweets in English containing the word “Trump”.</p>
@@ -168,10 +168,7 @@ server &lt;- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)</code></pre>
-<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
-</div>
-<div id="improvements-and-additions-for-the-future" class="section level1">
-<h1>Improvements and Additions for the Future</h1>
+<p><div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div> # Improvements and Additions for the Future</p>
 <ul>
 <li>Figure out how to make the fetching of tweets faster since it delays the loading time of the app.</li>
 <li>Create a map of the locations where the tweets are coming from</li>

@@ -37,7 +37,7 @@ For example, the word "children" is usually used on a positive context, but late
 ![shiny app screenshot](/img/screenshot.png)
 
 # The Package
-We created a package with all the functions we'd be calling from the shiny app R file, this package contains functions that range from scraping the data, cleaning the tweets, sentiment analysis, and creating a wordcloud. This package can be accesses at [https://github.com/lukemcphillips/trumppackage2.0](https://github.com/lukemcphillips/trumppackage2.0). 
+We created a package with all the functions we'd be calling from the shiny app R file, this package contains functions that range from scraping the data, cleaning the tweets, sentiment analysis, and creating a wordcloud. This package can be accessed at [https://github.com/lukemcphillips/trumppackage2.0](https://github.com/lukemcphillips/trumppackage2.0). 
 
 ## `tweets()` function
 
@@ -201,7 +201,6 @@ server <- function(input, output) {
 # Run the application 
 shinyApp(ui = ui, server = server)
 ```
-
 # Improvements and Additions for the Future
 
 - Figure out how to make the fetching of tweets faster since it delays the loading time of the app. 

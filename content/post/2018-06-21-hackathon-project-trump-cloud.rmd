@@ -16,9 +16,14 @@ library(twitteR)
 library(tidytext)
 library(stringr)
 library(RCurl)
+library(shiny)
+library(ECharts2Shiny)
+library(shinythemes)
+library(lubridate)
 ```
 
-This project can be accessed at [https://dataewok.shinyapps.io/trump_cloud/](https://dataewok.shinyapps.io/trump_cloud/)
+This project can be accessed at [https://dataewok.shinyapps.io/trump_cloud/](https://dataewok.shinyapps.io/trump_cloud/).
+This project's Github repo can be accesses at [https://github.com/staceaileen/trump_cloud](https://github.com/staceaileen/trump_cloud.)
 
 # The Idea
 The idea for this application came from the thought of "What Did Trump Do Now?". There's so much buzz about everything that he's doing since he's not ruining the world one crisis at a time but multiple conflicts going at once. So how do we get all the keywords of what's happening, or at least what people are talking about the most? Through a wordcloud. 
@@ -27,7 +32,178 @@ This application is an interactive wordcloud that fetches the tweets from the da
 
 For example, the word "children" is usually used on a positive context, but lately with the whole immigrant children crisis the tweets are more negative than ever talking about how this is considered torture; hence the word would be displayed in red signifying a negative connotation. 
 
+
 ![shiny app screenshot](/img/screenshot.png)
 
 # The Package
+We created a package with all the functions we'd be calling from the shiny app R file, this package contains functions that range from scraping the data, cleaning the tweets, sentiment analysis, and creating a wordcloud. This package can be accesses at [https://github.com/lukemcphillips/trumppackage2.0](https://github.com/lukemcphillips/trumppackage2.0). 
+
+## `tweets()` function
+
+This function simply retrieves all the tweets related to Trump from Twitter. It takes in all the keys and tokens necessary to access Twitter, and then uses the `library(twitteR)` package to `searchTwitter()`. We have it set up to retrieve a maximum of 2500 tweets in English containing the word "Trump".
+
+```{r}
+tweets <- function() {
+  # configuration
+  consumer_key <- ""
+  consumer_secret <- ""
+  access_token <- ""
+  access_secret <- ""
+
+  # getting tweets using twitteR API
+  twitteR::setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+
+  tw = twitteR::searchTwitter('Trump', n = 2500, lang = 'en', retryOnRateLimit = 1e3)
+  d = twitteR::twListToDF(tw)
+  d
+}
+```
+
+## `clean_data()` function
+
+This function will take as an argument the data frame obtained from the `tweets()` function and will then clean up the text by removing the all user mentions (usernames following a '@' sign), all the RTs, the links, random strings of numbers and the word 'amp' that designates an ampersign. From there we indexed all the tweets by using the `mutate()` function, divided the tweets by word into a "word bag" and removed all the stop words. 
+
+```{r}
+clean_data <- function() {
+  # configuration
+  tweet_created = d %>% select(text, created)
+
+  tweet_created$text <- gsub("@\\w+ *", "", tweet_created$text)
+  tweet_created$text <- gsub("(R)T ", "", tweet_created$text)
+  tweet_created$text <- gsub("https", "", tweet_created$text)
+  tweet_created$text <- gsub("t.co", "", tweet_created$text)
+  tweet_created$text <- gsub("[0-9]+", "", tweet_created$text)
+  tweet_created$text <- gsub("amp", "", tweet_created$text)
+
+  # cleaning the text from tweets
+  word_bag <- tweet_created %>% mutate(line = 1:nrow(.))
+  (word_bag <- word_bag %>% unnest_tokens(word, text))
+
+  data(stop_words)
+  word_bag <- word_bag %>% anti_join(stop_words)
+  word_bag
+
+}
+```
+
+## `sentiments_score()` function
+
+This function is what will help us color code our cloud into negative and positive connotations. We run a sentiment analysis per word on the `word_bag` obtained from the `clean_data()` function, now each word as a different sentiment score base don the "afinn" sentiment lexicon. But we don't want to just know the sentiment for each word but for each tweet since a positive word can be used to wrap a negative message, hence we then averaged all the sentiment scores per tweet (in code, this means we grouped by line). We then finally merged the two different lists into one, so that each word has their sentiment (based on tweet) assigned. 
+
+```{r}
+sentiments_score <- function(word_bag) {
+
+  scored_words <- word_bag %>% inner_join(get_sentiments("afinn"))
+
+  avg_scored_tweets <- scored_words %>%
+    group_by(line) %>%
+    dplyr::summarize(avg_score = mean(score))
+
+
+  final_scoring <- left_join(scored_words, avg_scored_tweets, by = "line", all.X = TRUE)
+  final_scoring
+}
+
+```
+
+## `get_cloud()` function
+
+And finally, the function to create the actual cloud. We first calculated the frequency of each word appearing on our data frame, we then calculated the average sentiment per word; for example, if the word "Obama" was used positivily 8/10 times and negativily 2/10, then the color code would be a lighter shade of blue indicating mostly positive. 
+
+To color code our wordcloud we assigned different shades of red, blue and gray to ranges of sentiment (going from -5.0 to 4.0) to indicate positive/negative sentiments. 
+
+We also slice the dataframe depending on how many words the user selected to be displayed from the shiny app and finally feed all our arguments into the `wordcloud2()` function. 
+
+```{r}
+get_cloud <- function(num_words, final_scoring){
+  # count frequency of word
+  word_freq <- final_scoring %>%
+    group_by(word) %>%
+    dplyr::summarise(freq = as.numeric(table(word)))
+
+  # group by word to get avg sentiment
+  final_scoring <- final_scoring %>%
+    group_by(word) %>%
+    dplyr::summarize(avg_sentiment = mean(avg_score))
+
+  # merge freq with final_scoring
+  final_scoring <- merge(x = final_scoring, y = word_freq, by = "word", all.x = TRUE)
+
+  # assigning sentiment colors for cloud
+  mutate(final_scoring, color = cut(avg_sentiment, breaks = c(-5.0, -4.0, -3.0, -2.0, -1.0, 0, 1.0, 2.0, 3.0, 4.0),
+                                    labels = c("#CC0000", "#FF0000", "#FF3333",
+                                               "#FF6666", "#C0C0C0", "#99CCFF",
+                                               "#66B2FF", "#0080FF", "#0000FF"),
+                                    include.lowest = TRUE)) -> final_scoring
+
+  # create word cloud
+  testing <- final_scoring %>% select(word, freq, color)
+  testing <- testing %>% arrange(desc(freq)) %>% slice(0:num_words)
+  (cloud <- wordcloud2(data = testing, color = testing$color, shape = 'circle', backgroundColor = '#2c3e4f'))
+}
+```
+
+# Among the Things that Went Wrong:
+
+- We wanted to display a map showing with markers where the tweets were coming from, but from all the data we gathered the `lon` and `lat` variables would be `NA` for all observations. This is due to people not allowing Twitter to have their location so we had to scrape that idea. 
+
+- Bugs: our biggest encounter was that a chunk of code was fully functioning in one of our machines but not the other, and the code looked exactly the same. We later discovered this happened because the functin `summarize()` is used by more than one library and we happened to be calling two of those libraries, so we had to mannually call the function with its library `dplyr::summarize()`. 
+
+- Github. It took us a while to figure out how to synchronize a forked repository from the original repository but [this article](https://help.github.com/articles/syncing-a-fork/) helped us quite a bit. 
+
+# The Shiny App
+
+Our UI takes in two inputs, the amount of words to be shown and the date you want the app to fetch the tweets from. The reason why the date only goes back a week is because Twitter only allows us to search tweets from 1 - 2 weeks from today. 
+
+The serves is quite simple, we are simply calling all the functions of our package and finally displayin the word cloud on the main panel. One of our biggest challenges was to be able to show the word cloud as an output and later found out that `wordcloud2` uses a different function from `renderPlot` to render the cloud and it's `renderWordcloud2()`. 
+
+```{r}
+# Define UI for application that draws a histogram
+ui <- fluidPage(theme = shinytheme("superhero"),
+   
+   # Application title
+   titlePanel("What Did Trump Do Now?"),
+   
+   # Sidebar with a slider input for number of bins 
+   sidebarLayout(
+      sidebarPanel(
+        sliderInput("frequency",
+                     "Number of words:",
+                     min = 1,
+                     max = 30,
+                     value = 20),
+        
+      
+      dateInput("date", "From day:", value = as.character(today()-1), min = as.character(today() - 7), max = as.character(today()-1),
+                format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+                language = "en", width = NULL)
+      ),
+      
+      # Show a plot of the generated distribution
+      mainPanel(
+         wordcloud2Output('word_cloud')
+      )
+   )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+   
+   output$word_cloud <- renderWordcloud2({
+      d <- tweets(input$date)
+      word_bag <- clean_data(d)
+      final_scoring <- sentiments_score(word_bag)
+      (get_cloud(input$frequency, final_scoring))
+   })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+# Improvements and Additions for the Future
+
+- Figure out how to make the fetching of tweets faster since it delays the loading time of the app. 
+- Create a map of the locations where the tweets are coming from
+- Add options to not only search about Trump but give the user the ability to add more filters such as "Clinton", "North Korea", etc.
 

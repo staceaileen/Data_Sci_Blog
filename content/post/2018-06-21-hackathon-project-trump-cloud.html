@@ -9,7 +9,7 @@ tags: [hackathon, shiny app, R package, R, wordcloud]
 
 
 
-<p>This project can be accessed at <a href="https://dataewok.shinyapps.io/trump_cloud/" class="uri">https://dataewok.shinyapps.io/trump_cloud/</a></p>
+<p>This project can be accessed at <a href="https://dataewok.shinyapps.io/trump_cloud/" class="uri">https://dataewok.shinyapps.io/trump_cloud/</a>. This project’s Github repo can be accesses at <a href="https://github.com/staceaileen/trump_cloud.">https://github.com/staceaileen/trump_cloud</a></p>
 <div id="the-idea" class="section level1">
 <h1>The Idea</h1>
 <p>The idea for this application came from the thought of “What Did Trump Do Now?”. There’s so much buzz about everything that he’s doing since he’s not ruining the world one crisis at a time but multiple conflicts going at once. So how do we get all the keywords of what’s happening, or at least what people are talking about the most? Through a wordcloud.</p>
@@ -22,4 +22,158 @@ tags: [hackathon, shiny app, R package, R, wordcloud]
 </div>
 <div id="the-package" class="section level1">
 <h1>The Package</h1>
+<p>We created a package with all the functions we’d be calling from the shiny app R file, this package contains functions that range from scraping the data, cleaning the tweets, sentiment analysis, and creating a wordcloud. This package can be accesses at <a href="https://github.com/lukemcphillips/trumppackage2.0" class="uri">https://github.com/lukemcphillips/trumppackage2.0</a>.</p>
+<div id="tweets-function" class="section level2">
+<h2><code>tweets()</code> function</h2>
+<p>This function simply retrieves all the tweets related to Trump from Twitter. It takes in all the keys and tokens necessary to access Twitter, and then uses the <code>library(twitteR)</code> package to <code>searchTwitter()</code>. We have it set up to retrieve a maximum of 2500 tweets in English containing the word “Trump”.</p>
+<pre class="r"><code>tweets &lt;- function() {
+  # configuration
+  consumer_key &lt;- &quot;&quot;
+  consumer_secret &lt;- &quot;&quot;
+  access_token &lt;- &quot;&quot;
+  access_secret &lt;- &quot;&quot;
+
+  # getting tweets using twitteR API
+  twitteR::setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+
+  tw = twitteR::searchTwitter(&#39;Trump&#39;, n = 2500, lang = &#39;en&#39;, retryOnRateLimit = 1e3)
+  d = twitteR::twListToDF(tw)
+  d
+}</code></pre>
+</div>
+<div id="clean_data-function" class="section level2">
+<h2><code>clean_data()</code> function</h2>
+<p>This function will take as an argument the data frame obtained from the <code>tweets()</code> function and will then clean up the text by removing the all user mentions (usernames following a ‘@’ sign), all the RTs, the links, random strings of numbers and the word ‘amp’ that designates an ampersign. From there we indexed all the tweets by using the <code>mutate()</code> function, divided the tweets by word into a “word bag” and removed all the stop words.</p>
+<pre class="r"><code>clean_data &lt;- function() {
+  # configuration
+  tweet_created = d %&gt;% select(text, created)
+
+  tweet_created$text &lt;- gsub(&quot;@\\w+ *&quot;, &quot;&quot;, tweet_created$text)
+  tweet_created$text &lt;- gsub(&quot;(R)T &quot;, &quot;&quot;, tweet_created$text)
+  tweet_created$text &lt;- gsub(&quot;https&quot;, &quot;&quot;, tweet_created$text)
+  tweet_created$text &lt;- gsub(&quot;t.co&quot;, &quot;&quot;, tweet_created$text)
+  tweet_created$text &lt;- gsub(&quot;[0-9]+&quot;, &quot;&quot;, tweet_created$text)
+  tweet_created$text &lt;- gsub(&quot;amp&quot;, &quot;&quot;, tweet_created$text)
+
+  # cleaning the text from tweets
+  word_bag &lt;- tweet_created %&gt;% mutate(line = 1:nrow(.))
+  (word_bag &lt;- word_bag %&gt;% unnest_tokens(word, text))
+
+  data(stop_words)
+  word_bag &lt;- word_bag %&gt;% anti_join(stop_words)
+  word_bag
+
+}</code></pre>
+</div>
+<div id="sentiments_score-function" class="section level2">
+<h2><code>sentiments_score()</code> function</h2>
+<p>This function is what will help us color code our cloud into negative and positive connotations. We run a sentiment analysis per word on the <code>word_bag</code> obtained from the <code>clean_data()</code> function, now each word as a different sentiment score base don the “afinn” sentiment lexicon. But we don’t want to just know the sentiment for each word but for each tweet since a positive word can be used to wrap a negative message, hence we then averaged all the sentiment scores per tweet (in code, this means we grouped by line). We then finally merged the two different lists into one, so that each word has their sentiment (based on tweet) assigned.</p>
+<pre class="r"><code>sentiments_score &lt;- function(word_bag) {
+
+  scored_words &lt;- word_bag %&gt;% inner_join(get_sentiments(&quot;afinn&quot;))
+
+  avg_scored_tweets &lt;- scored_words %&gt;%
+    group_by(line) %&gt;%
+    dplyr::summarize(avg_score = mean(score))
+
+
+  final_scoring &lt;- left_join(scored_words, avg_scored_tweets, by = &quot;line&quot;, all.X = TRUE)
+  final_scoring
+}</code></pre>
+</div>
+<div id="get_cloud-function" class="section level2">
+<h2><code>get_cloud()</code> function</h2>
+<p>And finally, the function to create the actual cloud. We first calculated the frequency of each word appearing on our data frame, we then calculated the average sentiment per word; for example, if the word “Obama” was used positivily 8/10 times and negativily 2/10, then the color code would be a lighter shade of blue indicating mostly positive.</p>
+<p>To color code our wordcloud we assigned different shades of red, blue and gray to ranges of sentiment (going from -5.0 to 4.0) to indicate positive/negative sentiments.</p>
+<p>We also slice the dataframe depending on how many words the user selected to be displayed from the shiny app and finally feed all our arguments into the <code>wordcloud2()</code> function.</p>
+<pre class="r"><code>get_cloud &lt;- function(num_words, final_scoring){
+  # count frequency of word
+  word_freq &lt;- final_scoring %&gt;%
+    group_by(word) %&gt;%
+    dplyr::summarise(freq = as.numeric(table(word)))
+
+  # group by word to get avg sentiment
+  final_scoring &lt;- final_scoring %&gt;%
+    group_by(word) %&gt;%
+    dplyr::summarize(avg_sentiment = mean(avg_score))
+
+  # merge freq with final_scoring
+  final_scoring &lt;- merge(x = final_scoring, y = word_freq, by = &quot;word&quot;, all.x = TRUE)
+
+  # assigning sentiment colors for cloud
+  mutate(final_scoring, color = cut(avg_sentiment, breaks = c(-5.0, -4.0, -3.0, -2.0, -1.0, 0, 1.0, 2.0, 3.0, 4.0),
+                                    labels = c(&quot;#CC0000&quot;, &quot;#FF0000&quot;, &quot;#FF3333&quot;,
+                                               &quot;#FF6666&quot;, &quot;#C0C0C0&quot;, &quot;#99CCFF&quot;,
+                                               &quot;#66B2FF&quot;, &quot;#0080FF&quot;, &quot;#0000FF&quot;),
+                                    include.lowest = TRUE)) -&gt; final_scoring
+
+  # create word cloud
+  testing &lt;- final_scoring %&gt;% select(word, freq, color)
+  testing &lt;- testing %&gt;% arrange(desc(freq)) %&gt;% slice(0:num_words)
+  (cloud &lt;- wordcloud2(data = testing, color = testing$color, shape = &#39;circle&#39;, backgroundColor = &#39;#2c3e4f&#39;))
+}</code></pre>
+</div>
+</div>
+<div id="among-the-things-that-went-wrong" class="section level1">
+<h1>Among the Things that Went Wrong:</h1>
+<ul>
+<li><p>We wanted to display a map showing with markers where the tweets were coming from, but from all the data we gathered the <code>lon</code> and <code>lat</code> variables would be <code>NA</code> for all observations. This is due to people not allowing Twitter to have their location so we had to scrape that idea.</p></li>
+<li><p>Bugs: our biggest encounter was that a chunk of code was fully functioning in one of our machines but not the other, and the code looked exactly the same. We later discovered this happened because the functin <code>summarize()</code> is used by more than one library and we happened to be calling two of those libraries, so we had to mannually call the function with its library <code>dplyr::summarize()</code>.</p></li>
+<li><p>Github. It took us a while to figure out how to synchronize a forked repository from the original repository but <a href="https://help.github.com/articles/syncing-a-fork/">this article</a> helped us quite a bit.</p></li>
+</ul>
+</div>
+<div id="the-shiny-app" class="section level1">
+<h1>The Shiny App</h1>
+<p>Our UI takes in two inputs, the amount of words to be shown and the date you want the app to fetch the tweets from. The reason why the date only goes back a week is because Twitter only allows us to search tweets from 1 - 2 weeks from today.</p>
+<p>The serves is quite simple, we are simply calling all the functions of our package and finally displayin the word cloud on the main panel. One of our biggest challenges was to be able to show the word cloud as an output and later found out that <code>wordcloud2</code> uses a different function from <code>renderPlot</code> to render the cloud and it’s <code>renderWordcloud2()</code>.</p>
+<pre class="r"><code># Define UI for application that draws a histogram
+ui &lt;- fluidPage(theme = shinytheme(&quot;superhero&quot;),
+   
+   # Application title
+   titlePanel(&quot;What Did Trump Do Now?&quot;),
+   
+   # Sidebar with a slider input for number of bins 
+   sidebarLayout(
+      sidebarPanel(
+        sliderInput(&quot;frequency&quot;,
+                     &quot;Number of words:&quot;,
+                     min = 1,
+                     max = 30,
+                     value = 20),
+        
+      
+      dateInput(&quot;date&quot;, &quot;From day:&quot;, value = as.character(today()-1), min = as.character(today() - 7), max = as.character(today()-1),
+                format = &quot;yyyy-mm-dd&quot;, startview = &quot;month&quot;, weekstart = 0,
+                language = &quot;en&quot;, width = NULL)
+      ),
+      
+      # Show a plot of the generated distribution
+      mainPanel(
+         wordcloud2Output(&#39;word_cloud&#39;)
+      )
+   )
+)
+
+# Define server logic required to draw a histogram
+server &lt;- function(input, output) {
+   
+   output$word_cloud &lt;- renderWordcloud2({
+      d &lt;- tweets(input$date)
+      word_bag &lt;- clean_data(d)
+      final_scoring &lt;- sentiments_score(word_bag)
+      (get_cloud(input$frequency, final_scoring))
+   })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)</code></pre>
+<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
+</div>
+<div id="improvements-and-additions-for-the-future" class="section level1">
+<h1>Improvements and Additions for the Future</h1>
+<ul>
+<li>Figure out how to make the fetching of tweets faster since it delays the loading time of the app.</li>
+<li>Create a map of the locations where the tweets are coming from</li>
+<li>Add options to not only search about Trump but give the user the ability to add more filters such as “Clinton”, “North Korea”, etc.</li>
+</ul>
 </div>

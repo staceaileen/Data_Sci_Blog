@@ -204,7 +204,7 @@ shinyApp(ui = ui, server = server)
 
 # Improvements and Additions for the Future
 
-- Figure out how to make the fetching of tweets faster since it delays the loading time of the app. 
+- Figure out how to make the fetching of tweets faster since it delays the loading time of the app (find out how we fixed it [here](https://dataewok.netlify.com/2018/06/hackathon-project-trump-cloud-improvements/).)
 - Create a map of the locations where the tweets are coming from
 - Add options to not only search about Trump but give the user the ability to add more filters such as "Clinton", "North Korea", etc.
 

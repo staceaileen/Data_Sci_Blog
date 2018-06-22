@@ -1,6 +1,6 @@
 ---
 title: 'Kaggle Competition: 0.737 ROC Submission'
-author: Stacy Kam
+author: "Stacy Kam"
 date: '2018-06-13'
 slug: kaggle-competition-0-737-roc-submission
 categories: [R]

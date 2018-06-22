@@ -1,0 +1,32 @@
+---
+title: 'Hackathon Project: Trump Cloud Improvements'
+author: ~
+date: '2018-06-22'
+slug: hackathon-project-trump-cloud-improvements
+categories: [R]
+tags: [hackathon, shiny app, R package, R, wordcloud]
+---
+
+# Introduction
+
+In my [previous post](https://dataewok.netlify.com/2018/06/hackathon-project-trump-cloud/) I showed you guys how we came about coding our [shiny app](https://dataewok.shinyapps.io/trump_cloud/). In TL;DR fashion: this app shows a word cloud of the most frequent words used in tweets talking about Trump with their sentiment. 
+
+What was the problem? The application would take took long to run. So how did we fix running only one function whenever the word frequency was updated? We added all the no-need-to-rerun functions on its own reactive function and then when we needed the `final_scoring` variable we simply called the newly stantiated `fetch()` function. 
+
+```{r}
+server <- function(input, output) {
+  
+  fetch <- reactive({
+    d <- tweets(input$date)
+    word_bag <- clean_data(d)
+    final_scoring <- sentiments_score(word_bag)
+    return(final_scoring)
+  })
+   
+   output$word_cloud <- renderWordcloud2({
+      (get_cloud(input$frequency, fetch()))
+   })
+}
+```
+
+I hope this will help other people facing the same problem, and we will keep updating the shiny app with more features!

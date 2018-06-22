@@ -158,7 +158,7 @@ Our UI takes in two inputs, the amount of words to be shown and the date you wan
 
 The serves is quite simple, we are simply calling all the functions of our package and finally displayin the word cloud on the main panel. One of our biggest challenges was to be able to show the word cloud as an output and later found out that `wordcloud2` uses a different function from `renderPlot` to render the cloud and it's `renderWordcloud2()`. 
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, echo=TRUE}
 # Define UI for application that draws a histogram
 ui <- fluidPage(theme = shinytheme("superhero"),
    

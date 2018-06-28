@@ -4,7 +4,7 @@ author: 'Stacy Kam'
 date: '2018-06-28'
 slug: internship-week-1-what-have-i-learned
 categories: [internship, python]
-tags: [python, internship, neural networks, keras, cnns, tensorflow]
+tags: [python, internship, neural networks, keras, cnns, tensorflow, github]
 ---
 
 # The Why: 
@@ -21,5 +21,11 @@ We learned how to create our in python virtual environment through pyenv instead
 
 ## Sloth
 
-We had to download a software called Sloth in order to create `.yaml` files containing annotations used to image recognition
+We had to download a software called Sloth in order to create `.yaml` files containing annotations used to image recognition. 
 
+### Problems We Ran Into:
+- Apparently Sloth doesn't run on the current version of PyQt which is version 5, so we cracked our heads trying to uninstall version 5 to install version 4 instead but we found another way around it. We simply found a [Sloth that worked with version 5](https://github.com/thuyen/sloth/tree/qt5) and it fixed all our problems. 
+
+## New Github Skills
+
+We learned how to create new branches within repos and update the branches by merging our edited/new content. For good resource link on the topic click [here](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches).

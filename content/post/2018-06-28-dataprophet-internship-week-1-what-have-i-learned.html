@@ -1,0 +1,39 @@
+---
+title: 'Data Science Internship: Week 1 - What Have I Learned?'
+author: 'Stacy Kam'
+date: '2018-06-28'
+slug: internship-week-1-what-have-i-learned
+categories: [internship, python]
+tags: [python, internship, neural networks, keras, cnns, tensorflow, github]
+---
+
+
+
+<div id="the-why" class="section level1">
+<h1>The Why:</h1>
+<p>Started my Data Science internship at a data science consulting company located in Cape Town, South Africa. In these series of posts I’ll be posting topics, link resources, and intriguing things I run up to during the internship.</p>
+<div id="virtual-environments" class="section level2">
+<h2>Virtual Environments</h2>
+<p>We learned how to create our in python virtual environment through pyenv instead of using Conda as we were used to during class. The difference is that Conda will include all the packages when you’re deploying the program while a virtual environment will not come with all the extra unnecessary packages.</p>
+<div id="problems-we-ran-into" class="section level3">
+<h3>Problems We Ran Into:</h3>
+<ul>
+<li>After installing our virtual environment following the code: <code>virtualenv {name_here}</code> and the activating it by <code>source {name_here}/bin/activate</code> we uploaded all the neccesary packages through the usual <code>pip install</code> but we were running into trouble when trying to <code>import matplotlib.pyplot as plt</code> and found out a good resrouce for that problem <a href="https://matplotlib.org/faq/osx_framework.html#virtualenv">here</a>, so we ended up creating a whole new environment using <code>venv</code> instead of <code>virtualenv</code>.</li>
+</ul>
+</div>
+</div>
+<div id="sloth" class="section level2">
+<h2>Sloth</h2>
+<p>We had to download a software called Sloth in order to create <code>.yaml</code> files containing annotations used to image recognition.</p>
+<div id="problems-we-ran-into-1" class="section level3">
+<h3>Problems We Ran Into:</h3>
+<ul>
+<li>Apparently Sloth doesn’t run on the current version of PyQt which is version 5, so we cracked our heads trying to uninstall version 5 to install version 4 instead but we found another way around it. We simply found a <a href="https://github.com/thuyen/sloth/tree/qt5">Sloth that worked with version 5</a> and it fixed all our problems.</li>
+</ul>
+</div>
+</div>
+<div id="new-github-skills" class="section level2">
+<h2>New Github Skills</h2>
+<p>We learned how to create new branches within repos and update the branches by merging our edited/new content. For good resource link on the topic click <a href="https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches">here</a>.</p>
+</div>
+</div>

@@ -1,0 +1,25 @@
+---
+title: 'Data Science Internship: Week 1 - What Have I Learned?'
+author: 'Stacy Kam'
+date: '2018-06-28'
+slug: internship-week-1-what-have-i-learned
+categories: [internship, python]
+tags: [python, internship, neural networks, keras, cnns, tensorflow]
+---
+
+# The Why: 
+
+Started my Data Science internship at a data science consulting company located in Cape Town, South Africa. In these series of posts I'll be posting topics, link resources, and intriguing things I run up to during the internship. 
+
+## Virtual Environments
+
+We learned how to create our in python virtual environment through pyenv instead of using Conda as we were used to during class. The difference is that Conda will include all the packages when you're deploying the program while a virtual environment will not come with all the extra unnecessary packages. 
+
+### Problems We Ran Into:
+- After installing our virtual environment following the code: `virtualenv {name_here}` and the activating it by `source {name_here}/bin/activate` we uploaded all the neccesary packages through the usual `pip install` but we were running into trouble when trying to `import matplotlib.pyplot as plt` and found out a good resrouce for that problem [here](https://matplotlib.org/faq/osx_framework.html#virtualenv), so we ended up creating a whole new environment using `venv` instead of `virtualenv`. 
+
+
+## Sloth
+
+We had to download a software called Sloth in order to create `.yaml` files containing annotations used to image recognition
+

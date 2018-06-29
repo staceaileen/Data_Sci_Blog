@@ -29,3 +29,22 @@ We had to download a software called Sloth in order to create `.yaml` files cont
 ## New Github Skills
 
 We learned how to create new branches within repos and update the branches by merging our edited/new content. For good resource link on the topic click [here](https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches).
+
+## Activation Functions in CNNs
+
+We also started working with CNNs and our main struggle has been selecting the activation function. An activation function is what decides if a neuron should be "fired" or not, hence the name ACTIV(E)ation function. We started out with the `tanh` function which returns an output in betweet -1 and 1, then changed to the `selu` function returning outputs between 0 and infinity and finally choosing the `sigmoid` function that returns outputs from 0 to 1. We chose that one since we want our output to be in between a set range of positive numbers so having our input scaled from 0 to 1 and later multiplying it by our max range we get our output in set range. 
+
+For more information about activation functions click [here](https://medium.com/the-theory-of-everything/understanding-activation-functions-in-neural-networks-9491262884e0).
+
+## Tensorflow and SSH errors
+
+We ran into problems when trying to run our code in the SSH, the error kept saying that tensorflow couldn't start a session and it had some relation to allocating memory. We fixed it by typing `export CUDA_VISIBLE_DEVICES=‘’` on the terminal and it worked!
+
+## Becoming a VIM expert
+
+One of my goals this internship is to be an expert at coding with VIM, like badasses do (ehem, Sean "everything is sick" the TA). So some of the basics are:
+- vi <filename> — to open
+- i — to edit text
+- dd — on esc mode to delete whole line
+- :wq — on esc mode to exit vim
+

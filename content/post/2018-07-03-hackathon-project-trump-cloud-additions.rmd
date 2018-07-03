@@ -1,0 +1,39 @@
+---
+title: 'Hackathon Project: Trump Cloud Additions'
+author: ~
+date: '2018-07-03'
+slug: hackathon-project-trump-cloud-additions
+categories: [hackathon]
+tags: [hackathon, R, R package, shinyapp, wordcloud]
+---
+
+# Feature Additions
+
+I added a UI input text feature so that the user could specify tweets that contain the word `Trump` and whatever word the user wants. For example if you want to know the exact feeling of people tweeting about `Trump` and `children` now you can!
+
+# The Code
+
+### Text Input on the UI on Shiny App:
+
+``` {r}
+textInput("filter", "Filter Word:", value = "")
+```
+
+### Applying the input on the server:
+
+``` {r}
+fetch <- reactive({
+    d <- tweets(input$date, input$filter)
+    word_bag <- clean_data(d)
+    final_scoring <- sentiments_score(word_bag)
+    return(final_scoring)
+  })
+```
+
+### Adding the new attribute to the function:
+
+```{r}
+tw = twitteR::searchTwitter(paste0("Trump ", "+ ", filter_word), n = 2500,
+                              since = as.character(inputdate - 1), until = as.character(inputdate),
+                              lang = 'en', retryOnRateLimit = 1e3)
+```

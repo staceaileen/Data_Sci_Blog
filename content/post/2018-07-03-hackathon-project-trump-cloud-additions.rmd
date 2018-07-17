@@ -1,6 +1,6 @@
 ---
 title: 'Hackathon Project: Trump Cloud Additions'
-author: ~
+author: 'Stacy Kam'
 date: '2018-07-03'
 slug: hackathon-project-trump-cloud-additions
 categories: [hackathon]

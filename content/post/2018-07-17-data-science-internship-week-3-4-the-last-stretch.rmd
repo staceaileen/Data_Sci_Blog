@@ -1,6 +1,6 @@
 ---
 title: 'Data Science Internship: Week 3 & 4: The Last Stretch'
-author: ~
+author: 'Stacy Kam'
 date: '2018-07-17'
 slug: data-science-internship-week-3-4-the-last-stretch
 categories: [internship]

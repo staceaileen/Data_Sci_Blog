@@ -24,17 +24,17 @@ tags: [R Package]
 <p>The attributes for this function are: a string of characters, and optional length of output words, and optional wildcard (allows system to add any letter that might make a new word with existing string). This function will return a list of words that can be made with the constraints set.</p>
 <p>For instance, you might decide to get all existing words with the letters: a, b, and c</p>
 <pre class="r"><code>get_words(&quot;abce&quot;)</code></pre>
-<pre><code>## [1] &quot;cab&quot; &quot;ace&quot; &quot;ab&quot;  &quot;ba&quot;  &quot;be&quot;  &quot;ae&quot;</code></pre>
+<pre><code>## [1] &quot;cab&quot; &quot;ace&quot; &quot;be&quot;  &quot;ab&quot;  &quot;ba&quot;  &quot;ae&quot;</code></pre>
 <p>You might also want just with words with at most 3 letters:</p>
 <pre class="r"><code>get_words(&quot;abc&quot;, 3)</code></pre>
 <pre><code>## [1] &quot;cab&quot;</code></pre>
 <p>And to make it a little more exciting, you might even want to add a wildcard:</p>
 <pre class="r"><code>get_words(&quot;abc&quot;, 3, TRUE)</code></pre>
-<pre><code>##  [1] &quot;jab&quot; &quot;kab&quot; &quot;fab&quot; &quot;caw&quot; &quot;wab&quot; &quot;aby&quot; &quot;vac&quot; &quot;cay&quot; &quot;bay&quot; &quot;bah&quot; &quot;cam&quot;
-## [12] &quot;cab&quot; &quot;mac&quot; &quot;cub&quot; &quot;cap&quot; &quot;pac&quot; &quot;bap&quot; &quot;cob&quot; &quot;bam&quot; &quot;dab&quot; &quot;bad&quot; &quot;cad&quot;
-## [23] &quot;gab&quot; &quot;bag&quot; &quot;sac&quot; &quot;baa&quot; &quot;abo&quot; &quot;boa&quot; &quot;act&quot; &quot;cat&quot; &quot;lac&quot; &quot;oba&quot; &quot;oca&quot;
-## [34] &quot;aba&quot; &quot;bar&quot; &quot;bra&quot; &quot;arb&quot; &quot;ace&quot; &quot;lab&quot; &quot;arc&quot; &quot;car&quot; &quot;ban&quot; &quot;sab&quot; &quot;abs&quot;
-## [45] &quot;nab&quot; &quot;tab&quot; &quot;bat&quot; &quot;can&quot; &quot;bal&quot; &quot;alb&quot;</code></pre>
+<pre><code>##  [1] &quot;jab&quot; &quot;kab&quot; &quot;caf&quot; &quot;bah&quot; &quot;cay&quot; &quot;caw&quot; &quot;fab&quot; &quot;bay&quot; &quot;aby&quot; &quot;vac&quot; &quot;wab&quot;
+## [12] &quot;bam&quot; &quot;mac&quot; &quot;cap&quot; &quot;bap&quot; &quot;pac&quot; &quot;cub&quot; &quot;cob&quot; &quot;cab&quot; &quot;cam&quot; &quot;bad&quot; &quot;dab&quot;
+## [23] &quot;gab&quot; &quot;cad&quot; &quot;bag&quot; &quot;aba&quot; &quot;sac&quot; &quot;lab&quot; &quot;alb&quot; &quot;act&quot; &quot;cat&quot; &quot;bar&quot; &quot;bal&quot;
+## [34] &quot;arb&quot; &quot;bra&quot; &quot;ban&quot; &quot;nab&quot; &quot;oca&quot; &quot;arc&quot; &quot;tab&quot; &quot;bat&quot; &quot;ace&quot; &quot;lac&quot; &quot;cal&quot;
+## [45] &quot;baa&quot; &quot;can&quot; &quot;abs&quot; &quot;oba&quot; &quot;abo&quot; &quot;boa&quot;</code></pre>
 </div>
 <div id="num_word" class="section level1">
 <h1>num_word()</h1>

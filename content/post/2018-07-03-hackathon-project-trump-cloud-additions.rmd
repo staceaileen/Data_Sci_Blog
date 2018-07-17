@@ -15,25 +15,25 @@ I added a UI input text feature so that the user could specify tweets that conta
 
 ### Text Input on the UI on Shiny App:
 
-``` {r echo=TRUE}
-textInput("filter", "Filter Word:", value = "")
+``` {r}
+# textInput("filter", "Filter Word:", value = "")
 ```
 
 ### Applying the input on the server:
 
-``` {r echo=TRUE}
-fetch <- reactive({
-    d <- tweets(input$date, input$filter)
-    word_bag <- clean_data(d)
-    final_scoring <- sentiments_score(word_bag)
-    return(final_scoring)
-  })
+``` {r}
+# fetch <- reactive({
+#     d <- tweets(input$date, input$filter)
+#     word_bag <- clean_data(d)
+#     final_scoring <- sentiments_score(word_bag)
+#     return(final_scoring)
+#   })
 ```
 
 ### Adding the new attribute to the function:
 
-```{r eval=FALSE, include=FALSE, echo=TRUE}
-tw = twitteR::searchTwitter(paste0("Trump ", "+ ", filter_word), n = 2500,
-                              since = as.character(inputdate - 1), until = as.character(inputdate),
-                              lang = 'en', retryOnRateLimit = 1e3)
+```{r}
+# tw = twitteR::searchTwitter(paste0("Trump ", "+ ", filter_word), n = 2500,
+#                               since = as.character(inputdate - 1), until = as.character(inputdate),
+#                               lang = 'en', retryOnRateLimit = 1e3)
 ```
